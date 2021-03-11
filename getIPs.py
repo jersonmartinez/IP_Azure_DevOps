@@ -1,37 +1,26 @@
-import queue
 import urllib.request
-import re
-from urllib.parse import urljoin
+import wget
+from bs4 import BeautifulSoup
 
-def descargar(pagina):
-    try:
-        peticion = urllib.request.Request(pagina)
-        html = urllib.request.urlopen(peticion).read()
-        print("[*] Descarga OK >>", pagina)
-    except:
-        print('[!] Error descargando', pagina)
-        return None
+url = 'https://www.microsoft.com/en-us/download/confirmation.aspx?id=56519'
 
-    return html
+user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
+headers = {'User-Agent': user_agent, }
 
-def rastrearEnlaces(pagina):
-    buscaEnlaces = re.compile('<a[^>]+href=["\'](.*?)["\']', re.IGNORECASE)
-    cola = queue.Queue()
-    cola.put(pagina)
-    visitados = [pagina]
-    print("Buscando enlaces en", pagina)
-    while (cola.qsize() > 0):
-        html = descargar(cola.get())
-        if html == None:
-            continue
-        enlaces = buscaEnlaces.findall(str(html))
-        for enlace in enlaces:
-            enlace = urljoin(pagina, str(enlace))
-            if(enlace not in visitados):
-                cola.put(enlace)
-                visitados.append(enlace)
+request = urllib.request.Request(url, None, headers)
 
+datos = urllib.request.urlopen(request).read().decode()
 
-if __name__ == "__main__":
-    url = "https://www.microsoft.com/en-us/download/confirmation.aspx?id=56519"
-    rastrearEnlaces(url)
+soup = BeautifulSoup(datos)
+tags = soup('a')
+
+matchUrl = 'https://download.microsoft.com/download/7/1/D/71D86715-5596-4529-9B13-DA13A5DE5B63/'
+cadUrl2 = len(matchUrl)
+
+for tag in tags:
+    cadUrl = tag.get('href')
+    subCadena = cadUrl[0:cadUrl2]
+
+    if matchUrl == subCadena:
+        #print("Son iguales")
+        wget.download(cadUrl, '/home/marlon/Descargas/DevopsAzureIPs.json')
