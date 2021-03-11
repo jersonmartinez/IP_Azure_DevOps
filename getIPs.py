@@ -14,7 +14,6 @@ def descargar(pagina):
 
     return html
 
-
 def rastrearEnlaces(pagina):
     buscaEnlaces = re.compile('<a[^>]+href=["\'](.*?)["\']', re.IGNORECASE)
     cola = queue.Queue()
@@ -36,4 +35,3 @@ def rastrearEnlaces(pagina):
 if __name__ == "__main__":
     url = "https://www.microsoft.com/en-us/download/confirmation.aspx?id=56519"
     rastrearEnlaces(url)
->>>>>>> 435ecba83c9726d280ea44fac3b9b3448b10c89d
