@@ -28,15 +28,15 @@ def lambda_handler(event, context):
     filename = url.split("/")[len(url.split("/")) - 1]
     
     ## DOWNLOAD json to S3 ###
-    bucket = 'newshore-backups' #your s3 bucket
-    key = 'zap/' + str(filename) #your desired s3 path or filename
+    bucket = 'backet-directory' #your s3 bucket
+    key = 'subdirectory/' + str(filename) #your desired s3 path or filename
     
     http=urllib3.PoolManager()
     client.upload_fileobj(http.request('GET', url,preload_content=False), bucket, key)
     ### DOWNLOAD json to S3 ###
     
     ### GET IP from json ###
-    response = client.get_object(Bucket='newshore-backups', Key='zap/'+str(filename),)
+    response = client.get_object(Bucket='backet-directory', Key='subdirectory/'+str(filename),)
     res = response["Body"].read().decode()
     json_content = json.loads(res)
     
